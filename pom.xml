@@ -19,7 +19,7 @@
         <spring.platform.version>2.0.5.RELEASE</spring.platform.version>
         <jstl.version>1.2</jstl.version>
 
-        <light-logging-configurer.version>1.0.0.BUILD-SNAPSHOT</light-logging-configurer.version>
+        <light-logging-configurer.version>1.0.0.RC1</light-logging-configurer.version>
     </properties>
 
     <dependencyManagement>
