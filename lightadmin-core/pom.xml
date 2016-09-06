@@ -492,13 +492,13 @@
             </activation>
             <distributionManagement>
                 <snapshotRepository>
-                    <id>lightadmin-nexus</id>
-                    <url>http://lightadmin.org/nexus/content/repositories/snapshots</url>
+                    <id>morningstar-nexus-public</id>
+                    <url>https://msnexus.morningstar.com/content/groups/public/</url>
                 </snapshotRepository>
 
                 <repository>
-                    <id>lightadmin-nexus</id>
-                    <url>http://lightadmin.org/nexus/content/repositories/releases</url>
+                    <id>morningstar-nexus-public</id>
+                    <url>https://msnexus.morningstar.com/content/groups/public/</url>
                 </repository>
             </distributionManagement>
         </profile>
