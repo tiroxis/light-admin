@@ -503,32 +503,6 @@
                         <enabled>true</enabled>
                     </snapshots>
                 </repository>
-
-                <!--<repository>-->
-                    <!--<id>morningstar-engineering-nexus-snapshots</id>-->
-                    <!--<name>Morningstar Engineering Nexus - Public</name>-->
-                    <!--<url>https://msnexus.morningstar.com/content/repositories/ENGR-snapshots/</url>-->
-                    <!--<releases>-->
-                        <!--<enabled>false</enabled>-->
-                        <!--<updatePolicy>never</updatePolicy>-->
-                    <!--</releases>-->
-                    <!--<snapshots>-->
-                        <!--<enabled>true</enabled>-->
-                    <!--</snapshots>-->
-                <!--</repository>-->
-
-                <!--<repository>-->
-                    <!--<id>morningstar-engineering-nexus-releases</id>-->
-                    <!--<name>Morningstar Engineering Nexus - Public</name>-->
-                    <!--<url>https://msnexus.morningstar.com/content/repositories/ENGR-releases/</url>-->
-                    <!--<releases>-->
-                        <!--<enabled>true</enabled>-->
-                        <!--<updatePolicy>never</updatePolicy>-->
-                    <!--</releases>-->
-                    <!--<snapshots>-->
-                        <!--<enabled>false</enabled>-->
-                    <!--</snapshots>-->
-                <!--</repository>-->
             </repositories>
 
             <pluginRepositories>
@@ -545,17 +519,6 @@
                     </snapshots>
                 </pluginRepository>
             </pluginRepositories>
-
-            <distributionManagement>
-                <repository>
-                    <id>ENGR</id>
-                    <url>https://msnexus.morningstar.com/content/repositories/ENGR-releases/</url>
-                </repository>
-                <snapshotRepository>
-                    <id>ENGR</id>
-                    <url>https://msnexus.morningstar.com/content/repositories/ENGR-snapshots/</url>
-                </snapshotRepository>
-            </distributionManagement>
         </profile>
         <profile>
             <id>oss-distribution</id>
