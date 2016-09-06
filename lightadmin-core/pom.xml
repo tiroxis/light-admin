@@ -490,16 +490,71 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>morningstar-nexus-public</id>
-                    <url>https://msnexus.morningstar.com/content/groups/public/</url>
-                </snapshotRepository>
-
+            <repositories>
                 <repository>
                     <id>morningstar-nexus-public</id>
+                    <name>Morningstar Nexus - Public</name>
                     <url>https://msnexus.morningstar.com/content/groups/public/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
                 </repository>
+
+                <!--<repository>-->
+                    <!--<id>morningstar-engineering-nexus-snapshots</id>-->
+                    <!--<name>Morningstar Engineering Nexus - Public</name>-->
+                    <!--<url>https://msnexus.morningstar.com/content/repositories/ENGR-snapshots/</url>-->
+                    <!--<releases>-->
+                        <!--<enabled>false</enabled>-->
+                        <!--<updatePolicy>never</updatePolicy>-->
+                    <!--</releases>-->
+                    <!--<snapshots>-->
+                        <!--<enabled>true</enabled>-->
+                    <!--</snapshots>-->
+                <!--</repository>-->
+
+                <!--<repository>-->
+                    <!--<id>morningstar-engineering-nexus-releases</id>-->
+                    <!--<name>Morningstar Engineering Nexus - Public</name>-->
+                    <!--<url>https://msnexus.morningstar.com/content/repositories/ENGR-releases/</url>-->
+                    <!--<releases>-->
+                        <!--<enabled>true</enabled>-->
+                        <!--<updatePolicy>never</updatePolicy>-->
+                    <!--</releases>-->
+                    <!--<snapshots>-->
+                        <!--<enabled>false</enabled>-->
+                    <!--</snapshots>-->
+                <!--</repository>-->
+            </repositories>
+
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>morningstar-nexus-public</id>
+                    <name>Morningstar Nexus - Public</name>
+                    <url>https://msnexus.morningstar.com/content/groups/public/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+
+            <distributionManagement>
+                <repository>
+                    <id>ENGR</id>
+                    <url>https://msnexus.morningstar.com/content/repositories/ENGR-releases/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>ENGR</id>
+                    <url>https://msnexus.morningstar.com/content/repositories/ENGR-snapshots/</url>
+                </snapshotRepository>
             </distributionManagement>
         </profile>
         <profile>
