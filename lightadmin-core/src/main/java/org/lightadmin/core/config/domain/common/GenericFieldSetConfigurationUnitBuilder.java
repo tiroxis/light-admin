@@ -15,6 +15,7 @@
  */
 package org.lightadmin.core.config.domain.common;
 
+import java.util.TreeSet;
 import org.lightadmin.api.config.builder.FieldSetConfigurationUnitBuilder;
 import org.lightadmin.api.config.unit.FieldSetConfigurationUnit;
 import org.lightadmin.api.config.utils.FieldValueRenderer;
@@ -28,6 +29,15 @@ public class GenericFieldSetConfigurationUnitBuilder extends AbstractFieldSetCon
         implements FieldSetConfigurationUnitBuilder {
 
     private final FieldSetConfigurationUnit configurationUnit;
+    private static final TreeSet<String> internalLAFields = new TreeSet();
+
+    static {
+        internalLAFields.add("StringRepresentation");
+        internalLAFields.add("ManagedDomainType");
+        internalLAFields.add("PrimaryKey");
+        internalLAFields.add("DomainLink");
+        internalLAFields.add("DynamicProperties");
+    }
 
     public GenericFieldSetConfigurationUnitBuilder(Class<?> domainType, DomainConfigurationUnitType configurationUnitType) {
         super(domainType);
@@ -64,7 +74,7 @@ public class GenericFieldSetConfigurationUnitBuilder extends AbstractFieldSetCon
 
     @Override
     protected void addCurrentFieldToUnit() {
-        if (currentFieldMetadata != null) {
+        if (currentFieldMetadata != null && !internalLAFields.contains(currentFieldMetadata.getName())) {
             configurationUnit.addField(currentFieldMetadata);
         }
     }

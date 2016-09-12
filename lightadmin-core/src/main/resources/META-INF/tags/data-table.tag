@@ -56,7 +56,7 @@
         var dataTable = tableElement.dataTable({
             "bJQueryUI": true,
             "bStateSave": true,
-            "sAjaxDataProp": '_embedded.persistentEntityWrappers',
+            "sAjaxDataProp": '_embedded.${domainTypeAdministrationConfiguration.pluralDomainTypeName}',
             "aoColumnDefs": [
                 {
                     "bSortable": false,
@@ -67,29 +67,29 @@
                         return '<img class="quickView" src="<light:url value='/images/aNormal.png'/>" style="cursor:pointer;" title="${click_quick}"/>';
                     }
                 },
-            <c:forEach var="field" items="${fields}" varStatus="status">
+                <c:forEach var="field" items="${fields}" varStatus="status">
                 <c:set var="propertyName" value="${field.uuid}"/>
                 {
                     "bSortable": ${field.sortable},
                     "aTargets": [ ${status.index + 1 } ],
-            <c:choose>
-                <c:when test="${(not field.dynamic) and (light:persistentPropertyTypeOf(field.persistentProperty) eq ASSOC or light:persistentPropertyTypeOf(field.persistentProperty) eq ASSOC_MULT)}">
+                    <c:choose>
+                    <c:when test="${(not field.dynamic) and (light:persistentPropertyTypeOf(field.persistentProperty) eq ASSOC or light:persistentPropertyTypeOf(field.persistentProperty) eq ASSOC_MULT)}">
                     "mData": function(source) {
                         var domainEntity = new DomainEntity(source);
                         var propertyMetadata = ConfigurationMetadataService.getProperty(ApplicationConfig.RESOURCE_NAME, '${propertyName}', 'listView');
                         return domainEntity.getPropertyValue(propertyMetadata, 'listView');
                     },
-                </c:when>
-                <c:otherwise>
-                    "mData": '${field.dynamic or light:persistentPropertyTypeOf(field.persistentProperty) eq FILE? 'dynamic_properties.listView.' : 'original_properties.'}${propertyName}',
-                </c:otherwise>
-            </c:choose>
+                    </c:when>
+                    <c:otherwise>
+                    "mData": '${field.dynamic or light:persistentPropertyTypeOf(field.persistentProperty) eq FILE? 'dynamic_properties.listView.' : ''}${propertyName}',
+                    </c:otherwise>
+                    </c:choose>
                     "mRender": function (innerData) {
                         return mRenderFieldValue(innerData, '${propertyName}');
                     },
                     "sClass": "data-cell"
                 },
-            </c:forEach>
+                </c:forEach>
                 {
                     "bSortable": false,
                     "aTargets": [ ${fn:length(fields) + 1 } ],

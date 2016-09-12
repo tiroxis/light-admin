@@ -19,7 +19,7 @@ function DomainEntity(data) {
     this.primary_key = data['primary_key'];
     this.domain_link = this.managed_type ? data['domain_link']['href'] : null;
     this.links = data['_links'];
-    this.original_properties = data['original_properties'];
+    this.original_properties = data;
     this.dynamic_properties = data['dynamic_properties'];
 
     function getDynamicAssociationValue(domainEntity, propertyMetadata, unitType) {

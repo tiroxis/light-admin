@@ -22,7 +22,6 @@ import com.google.common.collect.Maps;
 import org.lightadmin.core.config.domain.field.CustomFieldMetadata;
 import org.lightadmin.core.config.domain.field.PersistentFieldMetadata;
 import org.lightadmin.core.config.domain.field.TransientFieldMetadata;
-import org.lightadmin.core.config.domain.unit.DomainConfigurationUnitType;
 import org.lightadmin.core.persistence.metamodel.PersistentPropertyType;
 import org.springframework.data.mapping.Association;
 import org.springframework.data.mapping.PersistentProperty;
@@ -34,6 +33,7 @@ import java.util.Map;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static com.google.common.collect.Maps.newLinkedHashMap;
+import java.util.TreeSet;
 import static org.lightadmin.core.persistence.metamodel.PersistentPropertyType.STRING;
 import static org.lightadmin.core.persistence.metamodel.PersistentPropertyType.UNKNOWN;
 
@@ -43,8 +43,17 @@ public class JsonConfigurationMetadata extends Resource<Map<String, JsonConfigur
 
     private String name;
     private boolean managedDomainType;
+    private static final TreeSet<String> lightAdminProperties = new TreeSet();
 
-    private Map<DomainConfigurationUnitType, Map<String, Property>> dynamicProperties;
+    static {
+        lightAdminProperties.add("stringRepresentation");
+        lightAdminProperties.add("managedDomainType");
+        lightAdminProperties.add("primaryKey");
+        lightAdminProperties.add("domainLink");
+        lightAdminProperties.add("dynamicProperties");
+    }
+
+    private Map<String, Map<String, Property>> dynamicProperties;
 
     public JsonConfigurationMetadata(String name, boolean managedDomainType) {
         super(Maps.<String, JsonConfigurationMetadata.Property>newLinkedHashMap());
@@ -66,7 +75,7 @@ public class JsonConfigurationMetadata extends Resource<Map<String, JsonConfigur
 
     @JsonProperty("dynamic_properties")
     @JsonInclude(NON_EMPTY)
-    public Map<DomainConfigurationUnitType, Map<String, Property>> getDynamicProperties() {
+    public Map<String, Map<String, Property>> getDynamicProperties() {
         return dynamicProperties;
     }
 
@@ -84,7 +93,7 @@ public class JsonConfigurationMetadata extends Resource<Map<String, JsonConfigur
         return this;
     }
 
-    public JsonConfigurationMetadata addAssociationProperty(Association association, Link restTemplateLink, DomainConfigurationUnitType unitType) {
+    public JsonConfigurationMetadata addAssociationProperty(Association association, Link restTemplateLink, String unitType) {
         PersistentProperty persistentProperty = association.getInverse();
         String persistentPropertyName = persistentProperty.getName();
 
@@ -93,7 +102,7 @@ public class JsonConfigurationMetadata extends Resource<Map<String, JsonConfigur
         return this;
     }
 
-    public JsonConfigurationMetadata addAssociationProperty(PersistentFieldMetadata persistentFieldMetadata, Link restTemplateLink, DomainConfigurationUnitType unitType) {
+    public JsonConfigurationMetadata addAssociationProperty(PersistentFieldMetadata persistentFieldMetadata, Link restTemplateLink, String unitType) {
         PersistentProperty persistentProperty = persistentFieldMetadata.getPersistentProperty().getAssociation().getInverse();
         String persistentPropertyName = persistentProperty.getName();
         String persistentPropertyTitle = persistentFieldMetadata.getName();
@@ -106,12 +115,14 @@ public class JsonConfigurationMetadata extends Resource<Map<String, JsonConfigur
     public JsonConfigurationMetadata addPersistentProperty(PersistentProperty persistentProperty) {
         String persistentPropertyName = persistentProperty.getName();
 
-        addProperty(persistentPropertyName, newProperty(persistentProperty, persistentPropertyName));
+        if (!lightAdminProperties.contains(persistentPropertyName)) {
+            addProperty(persistentPropertyName, newProperty(persistentProperty, persistentPropertyName));
+        }
 
         return this;
     }
 
-    public JsonConfigurationMetadata addPersistentProperty(PersistentProperty persistentProperty, DomainConfigurationUnitType unitType) {
+    public JsonConfigurationMetadata addPersistentProperty(PersistentProperty persistentProperty, String unitType) {
         String persistentPropertyName = persistentProperty.getName();
 
         addDynamicProperty(persistentPropertyName, newProperty(persistentProperty, persistentPropertyName), unitType);
@@ -119,7 +130,7 @@ public class JsonConfigurationMetadata extends Resource<Map<String, JsonConfigur
         return this;
     }
 
-    public JsonConfigurationMetadata addPersistentProperty(PersistentFieldMetadata persistentField, DomainConfigurationUnitType unitType) {
+    public JsonConfigurationMetadata addPersistentProperty(PersistentFieldMetadata persistentField, String unitType) {
         PersistentProperty persistentProperty = persistentField.getPersistentProperty();
         String persistentPropertyName = persistentProperty.getName();
         String persistentPropertyTitle = persistentField.getName();
@@ -129,7 +140,7 @@ public class JsonConfigurationMetadata extends Resource<Map<String, JsonConfigur
         return this;
     }
 
-    public JsonConfigurationMetadata addDynamicProperty(TransientFieldMetadata transientField, DomainConfigurationUnitType unitType) {
+    public JsonConfigurationMetadata addDynamicProperty(TransientFieldMetadata transientField, String unitType) {
         Property property = new Property(transientField.getUuid(), transientField.getName(), UNKNOWN, false, false);
 
         addDynamicProperty(transientField.getUuid(), property, unitType);
@@ -137,7 +148,7 @@ public class JsonConfigurationMetadata extends Resource<Map<String, JsonConfigur
         return this;
     }
 
-    public JsonConfigurationMetadata addDynamicProperty(CustomFieldMetadata customField, DomainConfigurationUnitType unitType) {
+    public JsonConfigurationMetadata addDynamicProperty(CustomFieldMetadata customField, String unitType) {
         Property property = new Property(customField.getUuid(), customField.getName(), STRING, false, false);
 
         addDynamicProperty(customField.getUuid(), property, unitType);
@@ -145,11 +156,13 @@ public class JsonConfigurationMetadata extends Resource<Map<String, JsonConfigur
         return this;
     }
 
-    private JsonConfigurationMetadata addDynamicProperty(String name, Property property, DomainConfigurationUnitType configurationUnitType) {
+    private JsonConfigurationMetadata addDynamicProperty(String name, Property property, String configurationUnitType) {
         if (!dynamicProperties.containsKey(configurationUnitType)) {
             dynamicProperties.put(configurationUnitType, Maps.<String, Property>newLinkedHashMap());
         }
-        dynamicProperties.get(configurationUnitType).put(name, property);
+        if (!lightAdminProperties.contains(name)) {
+            dynamicProperties.get(configurationUnitType).put(name, property);
+        }
         return this;
     }
 
@@ -185,6 +198,7 @@ public class JsonConfigurationMetadata extends Resource<Map<String, JsonConfigur
     }
 
     static class Property {
+
         private String name;
         private String title;
         private String type;

@@ -79,15 +79,15 @@ public class DomainTypeToJsonMetadataConverter implements Converter<PersistentEn
 
             for (FieldMetadata field : fieldForUnit) {
                 if (persistentFieldMetadataPredicate().apply(field)) {
-                    addPersistentProperty((PersistentFieldMetadata) field, unitType, jsonConfigurationMetadata);
+                    addPersistentProperty((PersistentFieldMetadata) field, unitType.toString(), jsonConfigurationMetadata);
                 }
 
                 if (customFieldMetadataPredicate().apply(field)) {
-                    jsonConfigurationMetadata.addDynamicProperty((CustomFieldMetadata) field, unitType);
+                    jsonConfigurationMetadata.addDynamicProperty((CustomFieldMetadata) field, unitType.toString());
                 }
 
                 if (transientFieldMetadataPredicate().apply(field)) {
-                    jsonConfigurationMetadata.addDynamicProperty((TransientFieldMetadata) field, unitType);
+                    jsonConfigurationMetadata.addDynamicProperty((TransientFieldMetadata) field, unitType.toString());
                 }
             }
         }
@@ -95,12 +95,12 @@ public class DomainTypeToJsonMetadataConverter implements Converter<PersistentEn
         return jsonConfigurationMetadata;
     }
 
-    private void addPersistentProperty(PersistentFieldMetadata field, DomainConfigurationUnitType unitType, JsonConfigurationMetadata jsonConfigurationMetadata) {
+    private void addPersistentProperty(PersistentFieldMetadata field, String unitType, JsonConfigurationMetadata jsonConfigurationMetadata) {
         PersistentProperty persistentProperty = field.getPersistentProperty();
         if (persistentProperty.isAssociation()) {
-            jsonConfigurationMetadata.addAssociationProperty(field, associationRestLinkTemplate(persistentProperty), unitType);
+            jsonConfigurationMetadata.addAssociationProperty(field, associationRestLinkTemplate(persistentProperty), unitType.toString());
         } else {
-            jsonConfigurationMetadata.addPersistentProperty(field, unitType);
+            jsonConfigurationMetadata.addPersistentProperty(field, unitType.toString());
         }
     }
 

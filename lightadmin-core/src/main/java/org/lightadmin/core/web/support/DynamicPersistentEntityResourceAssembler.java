@@ -19,6 +19,7 @@ import org.springframework.data.mapping.PersistentEntity;
 import org.springframework.data.mapping.context.PersistentEntities;
 import org.springframework.data.repository.core.EntityInformation;
 import org.springframework.data.repository.support.Repositories;
+import org.springframework.data.rest.core.mapping.RepositoryResourceMappings;
 import org.springframework.data.rest.core.mapping.ResourceMappings;
 import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
 import org.springframework.data.rest.webmvc.support.Projector;
@@ -68,16 +69,16 @@ public class DynamicPersistentEntityResourceAssembler extends PersistentEntityRe
     }
 
     private static PersistentEntities entities(PersistentEntityResourceAssembler persistentEntityResourceAssembler) {
-      return (PersistentEntities) forDirectFieldAccess(persistentEntityResourceAssembler).getPropertyValue("entities");
+        return (PersistentEntities) forDirectFieldAccess(persistentEntityResourceAssembler).getPropertyValue("entities");
     }
 
     private static Repositories repositories(PersistentEntityResourceAssembler persistentEntityResourceAssembler) {
-        //TODO: Repositories are no longer available!
-        return (Repositories) forDirectFieldAccess(persistentEntityResourceAssembler).getPropertyValue("repositories");
+        final RepositoryResourceMappings mappings = (RepositoryResourceMappings) forDirectFieldAccess(persistentEntityResourceAssembler).getPropertyValue("mappings");
+        return (Repositories) forDirectFieldAccess(mappings).getPropertyValue("repositories");
     }
 
     private static EntityLinks entityLinks(PersistentEntityResourceAssembler persistentEntityResourceAssembler) {
-        return (EntityLinks) forDirectFieldAccess(persistentEntityResourceAssembler).getPropertyValue("entityLinks");
+        return DynamicRepositoryEntityLinks.wrap((EntityLinks) forDirectFieldAccess(persistentEntityResourceAssembler).getPropertyValue("entityLinks"));
     }
 
     private static Projector projector(PersistentEntityResourceAssembler persistentEntityResourceAssembler) {
