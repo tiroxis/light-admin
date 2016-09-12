@@ -8,7 +8,7 @@
     <artifactId>lightadmin</artifactId>
     <packaging>jar</packaging>
 
-    <version>1.2.0.BUILD-SNAPSHOT</version>
+    <version>1.2.1.HELLOWALLET</version>
 
     <name>LightAdmin</name>
     <description>Pluggable data management solution for Java web applications developed in a "Rapid" manner
@@ -490,16 +490,45 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>lightadmin-nexus</id>
-                    <url>http://lightadmin.org/nexus/content/repositories/snapshots</url>
-                </snapshotRepository>
-
+            <repositories>
                 <repository>
-                    <id>lightadmin-nexus</id>
-                    <url>http://lightadmin.org/nexus/content/repositories/releases</url>
+                    <id>morningstar-nexus-public</id>
+                    <name>Morningstar Nexus - Public</name>
+                    <url>https://msnexus.morningstar.com/content/groups/public/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
                 </repository>
+            </repositories>
+
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>morningstar-nexus-public</id>
+                    <name>Morningstar Nexus - Public</name>
+                    <url>https://msnexus.morningstar.com/content/groups/public/</url>
+                    <releases>
+                        <enabled>true</enabled>
+                        <updatePolicy>never</updatePolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+
+            <distributionManagement>
+                <repository>
+                    <id>ENGR</id>
+                    <url>https://msnexus.morningstar.com/content/repositories/ENGR-releases/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>ENGR</id>
+                    <url>https://msnexus.morningstar.com/content/repositories/ENGR-snapshots/</url>
+                </snapshotRepository>
             </distributionManagement>
         </profile>
         <profile>
