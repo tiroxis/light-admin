@@ -35,6 +35,10 @@ public abstract class Editors {
         return new JspFragmentFieldControl("/views/editors/wysiwyg-field-edit-control.jsp");
     }
 
+    public static JspFragmentFieldControl readOnly() {
+        return new JspFragmentFieldControl("/views/editors/readonly-field-control.jsp");
+    }
+
     public static JspFragmentFieldControl enumeration(List<EnumElement> elements) {
         return new EnumFieldEditControl(elements);
     }
