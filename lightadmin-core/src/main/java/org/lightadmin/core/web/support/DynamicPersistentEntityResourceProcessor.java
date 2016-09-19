@@ -78,7 +78,7 @@ public class DynamicPersistentEntityResourceProcessor implements ResourceProcess
 
         Map<String, Map<String, Object>> dynamicProperties = dynamicPropertiesPerUnit(value, persistentEntity);
 
-        value.setDynamicProperties(dynamicProperties, stringRepresentation, domainLink, managedDomainType, primaryKey);
+        value.setDynamicProperties(dynamicProperties, stringRepresentation, domainLink, managedDomainType, primaryKey, null);
         PersistentEntityResource.Builder builder = PersistentEntityResource.build(value, persistentEntity);
         for (Link link : links) {
             builder = builder.withLink(link);

@@ -17,6 +17,7 @@ function DomainEntity(data) {
     this.string_representation = data['string_representation'];
     this.managed_type = data['managed_type'];
     this.primary_key = data['primary_key'];
+    this.primary_key_value = data['primary_key_value'];
     this.domain_link = this.managed_type ? data['domain_link']['href'] : null;
     this.links = data['_links'];
     this.original_properties = data;
@@ -75,7 +76,11 @@ function DomainEntity(data) {
     };
 
     this.getPrimaryKeyValue = function() {
-        return this.original_properties[this.getPrimaryKey()];
+        if (this.primary_key_value !== null) {
+            return this.primary_key_value;
+        } else {
+            return this.original_properties[this.getPrimaryKey()];
+        }
     };
 
     this.getPropertyValue = function(propertyMetadata, unitType) {

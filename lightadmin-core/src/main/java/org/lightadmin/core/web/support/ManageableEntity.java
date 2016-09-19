@@ -14,29 +14,26 @@ public class ManageableEntity implements Serializable {
     private String stringRepresentation;
     private boolean managedDomainType;
     private String primaryKey;
+    private Object primaryKeyValue;
     private Link domainLink;
     private Map<String, Map<String, Object>> dynamicProperties;
 
     public ManageableEntity() {
     }
 
-    private ManageableEntity(Map<String, Map<String, Object>> dynamicProperties, String stringRepresentation, Link domainLink, boolean managedDomainType, String primaryKey) {
-    }
-
     public static ManageableEntity associatedPersistentEntity(String stringRepresentation, boolean managedDomainType, String primaryKey, Object primaryKeyValue, Link domainLink) {
-        Map<String, Object> persistentEntity = newHashMap();
-        persistentEntity.put(primaryKey, primaryKeyValue);
         ManageableEntity entity = new ManageableEntity();
-        entity.setDynamicProperties(null, stringRepresentation, domainLink, managedDomainType, primaryKey);
+        entity.setDynamicProperties(null, stringRepresentation, domainLink, managedDomainType, primaryKey, primaryKeyValue);
         return entity;
     }
 
-    public void setDynamicProperties(Map<String, Map<String, Object>> dynamicProperties, String stringRepresentation, Link domainLink, boolean managedDomainType, String primaryKey) {
+    public void setDynamicProperties(Map<String, Map<String, Object>> dynamicProperties, String stringRepresentation, Link domainLink, boolean managedDomainType, String primaryKey, Object primaryKeyValue) {
         this.stringRepresentation = stringRepresentation;
         this.domainLink = domainLink;
         this.managedDomainType = managedDomainType;
         this.dynamicProperties = dynamicProperties;
         this.primaryKey = primaryKey;
+        this.primaryKeyValue = primaryKeyValue;
     }
 
     @JsonProperty("string_representation")
@@ -47,6 +44,11 @@ public class ManageableEntity implements Serializable {
     @JsonProperty("primary_key")
     public String getPrimaryKey() {
         return primaryKey;
+    }
+
+    @JsonProperty("primary_key_value")
+    public Object getPrimaryKeyValue() {
+        return primaryKeyValue;
     }
 
     @JsonProperty("managed_type")
