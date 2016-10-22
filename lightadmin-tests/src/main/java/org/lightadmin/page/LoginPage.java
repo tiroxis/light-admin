@@ -14,10 +14,10 @@ import static org.junit.Assert.fail;
 @Component
 public class LoginPage extends BasePage<LoginPage> {
 
-	@FindBy( name = "j_username" )
+	@FindBy( name = "username" )
 	private WebElement login;
 
-	@FindBy( name = "j_password" )
+	@FindBy( name = "password" )
 	private WebElement password;
 
 	@FindBy( id = "signIn" )
