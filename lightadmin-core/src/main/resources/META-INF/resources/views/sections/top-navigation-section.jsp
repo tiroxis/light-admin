@@ -27,14 +27,7 @@
                 <div class="welcome">
                     <a href="#" title="">
                         <img src="<light:url value='/images/userPic.png'/>" alt=""/></a>
-                    <span>Hello, <c:choose>
-                        <c:when test="principal.username">
-                            <sec:authentication property="principal.username"/>
-                        </c:when>
-                        <c:otherwise>
-                            <sec:authentication property="principal"/>
-                        </c:otherwise>
-                    </c:choose>!</span>
+                    <span>Hello, <sec:authentication property="principal.username"/>!</span>
                 </div>
                 <div class="userNav">
                     <ul>
