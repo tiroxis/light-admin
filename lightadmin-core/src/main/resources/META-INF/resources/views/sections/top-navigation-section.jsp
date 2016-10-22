@@ -28,8 +28,8 @@
                     <a href="#" title="">
                         <img src="<light:url value='/images/userPic.png'/>" alt=""/></a>
                     <span>Hello, <c:choose>
-                        <c:when test="principal.username">
-                            <sec:authentication property="principal.username"/>
+                        <c:when test="principal.login">
+                            <sec:authentication property="principal.login"/>
                         </c:when>
                         <c:otherwise>
                             <sec:authentication property="principal"/>
