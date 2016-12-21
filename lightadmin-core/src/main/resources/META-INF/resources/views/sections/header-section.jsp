@@ -21,8 +21,8 @@
 						<span>Create New</span>
 					</a>
 				</li>
-				<li class="iArchive"><a href="#" class="not-implemented" title=""><span>Templates</span></a></li>
-				<li class="iZipFiles"><a href="#" class="not-implemented" title=""><span>Export Data</span></a></li>
+				<%--<li class="iArchive"><a href="#" class="not-implemented" title=""><span>Templates</span></a></li>--%>
+				<%--<li class="iZipFiles"><a href="#" class="not-implemented" title=""><span>Export Data</span></a></li>--%>
 			</ul>
 		</c:if>
 	</div>

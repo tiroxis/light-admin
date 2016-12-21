@@ -26,7 +26,7 @@
     </c:if>
 
     <c:if test="${light:persistentPropertyTypeOf(attributeMetadata) eq numberFloatType}">
-    $("#${numericFieldId}").spinner({ decimals: 2 ${allowEmpty ? ', allowNull : true' : ''}});
+    $("#${numericFieldId}").spinner({ decimals: 6 ${allowEmpty ? ', allowNull : true' : ''}});
     </c:if>
     </c:if>
 </script>
