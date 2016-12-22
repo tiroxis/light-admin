@@ -28,7 +28,7 @@
                     <label for="req1"><spring:message code="label.username"/>:</label>
 
                     <div class="loginInput">
-                        <input type="text" name="username" class="validate[required]" id="req1"
+                        <input type="text" name="j_username" class="validate[required]" id="req1"
                                placeholder="${please_name}"
                                value='<c:if test="${not empty param.login_error}"><c:out value="${SPRING_SECURITY_LAST_USERNAME}"/></c:if>'/>
                     </div>
@@ -39,7 +39,7 @@
                     <label for="req2"><spring:message code="label.password"/>:</label>
 
                     <div class="loginInput">
-                        <input type="password" name="password" class="validate[required]" id="req2"
+                        <input type="password" name="j_password" class="validate[required]" id="req2"
                                placeholder="${please_password}"/>
                     </div>
                     <div class="fix"></div>
