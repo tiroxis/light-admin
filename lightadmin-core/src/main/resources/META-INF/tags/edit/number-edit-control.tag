@@ -1,4 +1,5 @@
 <%@ tag import="org.lightadmin.core.persistence.metamodel.PersistentPropertyType" %>
+<%@ tag import="org.lightadmin.core.util.Decimal" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
 <%@ taglib prefix="light" uri="http://www.lightadmin.org/tags" %>
@@ -17,7 +18,9 @@
 
 <c:set var="numberIntegerType" value="<%= PersistentPropertyType.NUMBER_INTEGER %>"/>
 <c:set var="numberFloatType" value="<%= PersistentPropertyType.NUMBER_FLOAT %>"/>
+<c:set var="decimalClass" value="<%=Decimal.class%>"/>
 <c:set var="numericFieldId" value="${attributeMetadata.name}${dialogMode ? '-dialog' : ''}"/>
+<c:set var="decimals" value="${attributeMetadata.isAnnotationPresent(decimalClass) ? attributeMetadata.findAnnotation(decimalClass).value() : 2}"/>
 
 <script type="text/javascript">
     <c:if test="${not disabled}">
@@ -26,7 +29,7 @@
     </c:if>
 
     <c:if test="${light:persistentPropertyTypeOf(attributeMetadata) eq numberFloatType}">
-    $("#${numericFieldId}").spinner({ decimals: 6 ${allowEmpty ? ', allowNull : true' : ''}});
+    $("#${numericFieldId}").spinner({ decimals: ${decimals} ${allowEmpty ? ', allowNull : true' : ''}});
     </c:if>
     </c:if>
 </script>
