@@ -8,7 +8,7 @@
     <artifactId>lightadmin</artifactId>
     <packaging>jar</packaging>
 
-    <version>1.2.2.WRD</version>
+    <version>1.2.2.1.WRD</version>
 
     <name>LightAdmin</name>
     <description>Pluggable data management solution for Java web applications developed in a "Rapid" manner
@@ -522,12 +522,12 @@
 
             <distributionManagement>
                 <repository>
-                    <id>ENGR</id>
-                    <url>https://msnexus.morningstar.com/content/repositories/ENGR-releases/</url>
+                    <id>releases</id>
+                    <url>https://nexus.wrd.hu/repository/releases</url>
                 </repository>
                 <snapshotRepository>
-                    <id>ENGR</id>
-                    <url>https://msnexus.morningstar.com/content/repositories/ENGR-snapshots/</url>
+                    <id>snapshots</id>
+                    <url>https://nexus.wrd.hu/repository/snapshots</url>
                 </snapshotRepository>
             </distributionManagement>
         </profile>
