@@ -1,10 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="attributeMetadata" type="org.springframework.data.mapping.PersistentProperty" scope="request"/>
 
-<c:forEach var="element" varStatus="loop" items="${elements}">
-    <label><input type="checkbox" id="check-${element.label}" name="${element.label}" value="${element.value}"/>${element.label}</label>
-</c:forEach>
-<input id="${attributeMetadata.name}" name="${attributeMetadata.name}" type="text" style="display: none"/>
+<div class="bitField">
+    <c:forEach var="element" varStatus="loop" items="${elements}">
+        <label><input type="checkbox" id="check-${element.label}" name="${element.label}" value="${element.value}"/>${element.label}</label>
+    </c:forEach>
+    <input id="${attributeMetadata.name}" name="${attributeMetadata.name}" type="text" style="display: none"/>
+</div>
 
 <script type="text/javascript">
 
