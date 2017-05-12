@@ -15,6 +15,7 @@
  */
 package org.lightadmin.api.config.utils;
 
+import org.lightadmin.core.view.editor.BitfieldEditControl;
 import org.lightadmin.core.view.editor.EnumFieldEditControl;
 import org.lightadmin.core.view.editor.JspFragmentFieldControl;
 
@@ -33,6 +34,11 @@ public abstract class Editors {
 
     public static JspFragmentFieldControl wysiwyg() {
         return new JspFragmentFieldControl("/views/editors/wysiwyg-field-edit-control.jsp");
+    }
+
+    public static JspFragmentFieldControl bitfield(List<String> labels)
+    {
+        return new BitfieldEditControl(labels);
     }
 
     public static JspFragmentFieldControl readOnly() {
