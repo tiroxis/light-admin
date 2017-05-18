@@ -1930,6 +1930,11 @@ div.selector select {
 
 /* Checker */
 
+.bitField div.checker {
+    margin-top: 2px;
+    margin-right: 8px;
+}
+
 div.checker {
     width: 15px;
     height: 15px;
