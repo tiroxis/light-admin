@@ -144,6 +144,10 @@ td.details {
     background: url(../images/icons/middlenav/create.png) no-repeat 50% 10px;
 }
 
+.middleNav ul li.iCopy a span {
+    background: url(../images/icons/middlenav/docs.png) no-repeat 50% 10px;
+}
+
 .middleNav ul li.iArchive a span {
     background: url(../images/icons/middlenav/archive.png) no-repeat 50% 10px;
 }
