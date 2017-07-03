@@ -25,7 +25,11 @@ import org.lightadmin.core.persistence.support.DynamicDomainObjectMerger;
 import org.lightadmin.core.storage.FileResourceStorage;
 import org.lightadmin.core.web.json.DomainTypeToJsonMetadataConverter;
 import org.lightadmin.core.web.json.LightAdminJacksonModule;
-import org.lightadmin.core.web.support.*;
+import org.lightadmin.core.web.support.ConfigurationHandlerMethodArgumentResolver;
+import org.lightadmin.core.web.support.DomainEntityLinks;
+import org.lightadmin.core.web.support.DynamicPersistentEntityResourceAssemblerArgumentResolver;
+import org.lightadmin.core.web.support.DynamicPersistentEntityResourceProcessor;
+import org.lightadmin.core.web.support.DynamicRepositoryEntityLinks;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +48,6 @@ import org.springframework.validation.Validator;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
-import java.net.URI;
 import java.util.List;
 
 import static com.google.common.collect.Lists.newLinkedList;
@@ -70,8 +73,10 @@ public class LightAdminRepositoryRestMvcConfiguration extends RepositoryRestMvcC
     }
 
     @Bean
-    public DynamicPersistentEntityResourceProcessor dynamicPersistentEntityResourceProcessor() {
-        return new DynamicPersistentEntityResourceProcessor(globalAdministrationConfiguration(), fileResourceStorage(), dynamicRepositoryEntityLinks(), domainEntityLinks(), resourceMappings());
+    @Autowired
+    public DynamicPersistentEntityResourceProcessor dynamicPersistentEntityResourceProcessor(RepositoryRestConfiguration repositoryConfiguration) {
+        return new DynamicPersistentEntityResourceProcessor(globalAdministrationConfiguration(), repositoryConfiguration,
+                fileResourceStorage(), dynamicRepositoryEntityLinks(), domainEntityLinks(), resourceMappings());
     }
 
     @Bean
@@ -95,7 +100,7 @@ public class LightAdminRepositoryRestMvcConfiguration extends RepositoryRestMvcC
 
     @Bean
     public RepositoryInvokerFactory repositoryInvokerFactory() {
-        RepositoryInvokerFactory repositoryInvokerFactory = super.repositoryInvokerFactory();
+        RepositoryInvokerFactory repositoryInvokerFactory = super.repositoryInvokerFactory(defaultConversionService());
 
         return new DynamicRepositoryInvokerFactory(repositories(), repositoryInvokerFactory);
     }

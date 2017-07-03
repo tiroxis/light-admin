@@ -15,8 +15,6 @@
  */
 package org.lightadmin.core.web.support;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.lightadmin.api.config.utils.EntityNameExtractor;
 import org.lightadmin.core.config.domain.DomainTypeAdministrationConfiguration;
 import org.lightadmin.core.config.domain.DomainTypeBasicConfiguration;
@@ -25,10 +23,15 @@ import org.lightadmin.core.config.domain.field.FieldMetadata;
 import org.lightadmin.core.config.domain.unit.DomainConfigurationUnitType;
 import org.lightadmin.core.persistence.metamodel.PersistentPropertyType;
 import org.lightadmin.core.storage.FileResourceStorage;
-import org.springframework.data.mapping.*;
+import org.springframework.data.mapping.Association;
+import org.springframework.data.mapping.PersistentEntity;
+import org.springframework.data.mapping.PersistentProperty;
+import org.springframework.data.mapping.SimpleAssociationHandler;
+import org.springframework.data.mapping.SimplePropertyHandler;
+import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.core.mapping.ResourceMappings;
 import org.springframework.data.rest.webmvc.PersistentEntityResource;
-import org.springframework.data.rest.webmvc.mapping.AssociationLinks;
+import org.springframework.data.rest.webmvc.mapping.Associations;
 import org.springframework.data.util.DirectFieldAccessFallbackBeanWrapper;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceProcessor;
@@ -37,15 +40,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY;
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newLinkedHashMap;
 import static org.lightadmin.core.config.domain.configuration.support.ExceptionAwareTransformer.exceptionAwareNameExtractor;
 import static org.lightadmin.core.config.domain.field.FieldMetadataUtils.customFields;
 import static org.lightadmin.core.config.domain.field.FieldMetadataUtils.transientFields;
-import static org.lightadmin.core.config.domain.unit.DomainConfigurationUnitType.*;
+import static org.lightadmin.core.config.domain.unit.DomainConfigurationUnitType.FORM_VIEW;
+import static org.lightadmin.core.config.domain.unit.DomainConfigurationUnitType.LIST_VIEW;
+import static org.lightadmin.core.config.domain.unit.DomainConfigurationUnitType.QUICK_VIEW;
+import static org.lightadmin.core.config.domain.unit.DomainConfigurationUnitType.SHOW_VIEW;
 import static org.lightadmin.core.persistence.metamodel.PersistentPropertyType.FILE;
 
 @SuppressWarnings(value = {"unchecked", "unused"})
@@ -55,14 +59,16 @@ public class DynamicPersistentEntityResourceProcessor implements ResourceProcess
     private final DynamicRepositoryEntityLinks entityLinks;
     private final DomainEntityLinks domainEntityLinks;
     private final FileResourceStorage fileResourceStorage;
-    private final AssociationLinks associationLinks;
+    private final Associations association;
 
-    public DynamicPersistentEntityResourceProcessor(GlobalAdministrationConfiguration adminConfiguration, FileResourceStorage fileResourceStorage, DynamicRepositoryEntityLinks entityLinks, DomainEntityLinks domainEntityLinks, ResourceMappings resourceMappings) {
+    public DynamicPersistentEntityResourceProcessor(GlobalAdministrationConfiguration adminConfiguration, RepositoryRestConfiguration config,
+                                                    FileResourceStorage fileResourceStorage, DynamicRepositoryEntityLinks entityLinks,
+                                                    DomainEntityLinks domainEntityLinks, ResourceMappings resourceMappings) {
         this.adminConfiguration = adminConfiguration;
         this.domainEntityLinks = domainEntityLinks;
         this.entityLinks = entityLinks;
         this.fileResourceStorage = fileResourceStorage;
-        this.associationLinks = new AssociationLinks(resourceMappings);
+        this.association = new Associations(resourceMappings, config);
     }
 
     @Override
@@ -220,7 +226,7 @@ public class DynamicPersistentEntityResourceProcessor implements ResourceProcess
         persistentEntity.doWithAssociations(new SimpleAssociationHandler() {
             @Override
             public void doWithAssociation(Association<? extends PersistentProperty<?>> association) {
-                if (associationLinks.isLinkableAssociation(association.getInverse())) {
+                if (DynamicPersistentEntityResourceProcessor.this.association.isLinkableAssociation(association.getInverse())) {
                     result.add(association);
                 }
             }

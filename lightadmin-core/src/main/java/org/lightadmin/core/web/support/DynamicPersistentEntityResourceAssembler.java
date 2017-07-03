@@ -21,7 +21,9 @@ import org.springframework.data.repository.core.EntityInformation;
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.data.rest.core.mapping.RepositoryResourceMappings;
 import org.springframework.data.rest.core.mapping.ResourceMappings;
+import org.springframework.data.rest.core.support.SelfLinkProvider;
 import org.springframework.data.rest.webmvc.PersistentEntityResourceAssembler;
+import org.springframework.data.rest.webmvc.mapping.Associations;
 import org.springframework.data.rest.webmvc.support.Projector;
 import org.springframework.hateoas.EntityLinks;
 import org.springframework.hateoas.Link;
@@ -39,7 +41,7 @@ import static org.springframework.beans.PropertyAccessorFactory.forDirectFieldAc
 public class DynamicPersistentEntityResourceAssembler extends PersistentEntityResourceAssembler {
 
     public DynamicPersistentEntityResourceAssembler(PersistentEntityResourceAssembler resourceAssembler) {
-        super(entities(resourceAssembler), entityLinks(resourceAssembler), projector(resourceAssembler), mappings(resourceAssembler));
+        super(entities(resourceAssembler), projector(resourceAssembler), associations(resourceAssembler), linkProvider(resourceAssembler));
     }
 
     /**
@@ -87,5 +89,13 @@ public class DynamicPersistentEntityResourceAssembler extends PersistentEntityRe
 
     private static ResourceMappings mappings(PersistentEntityResourceAssembler persistentEntityResourceAssembler) {
         return (ResourceMappings) forDirectFieldAccess(persistentEntityResourceAssembler).getPropertyValue("mappings");
+    }
+
+    private static Associations associations(PersistentEntityResourceAssembler persistentEntityResourceAssembler) {
+        return (Associations) forDirectFieldAccess(persistentEntityResourceAssembler).getPropertyValue("associations");
+    }
+
+    private static SelfLinkProvider linkProvider(PersistentEntityResourceAssembler persistentEntityResourceAssembler) {
+        return (SelfLinkProvider) forDirectFieldAccess(persistentEntityResourceAssembler).getPropertyValue("linkProvider");
     }
 }
