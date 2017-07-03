@@ -7,7 +7,7 @@
     <parent>
         <artifactId>lightadmin-parent</artifactId>
         <groupId>org.lightadmin</groupId>
-        <version>1.2.2.2.WRD</version>
+        <version>1.2.2.3.EM</version>
     </parent>
 
     <artifactId>lightadmin-sandbox</artifactId>
