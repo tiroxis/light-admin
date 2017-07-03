@@ -16,7 +16,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <spring.platform.version>2.0.5.RELEASE</spring.platform.version>
+        <spring.platform.version>Athens-SR6</spring.platform.version>
         <jstl.version>1.2</jstl.version>
 
         <light-logging-configurer.version>1.0.0.RC1</light-logging-configurer.version>
