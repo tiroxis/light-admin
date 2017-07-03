@@ -33,9 +33,11 @@ import org.lightadmin.core.web.support.DynamicRepositoryEntityLinks;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.data.repository.support.RepositoryInvokerFactory;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
@@ -99,8 +101,8 @@ public class LightAdminRepositoryRestMvcConfiguration extends RepositoryRestMvcC
     }
 
     @Bean
-    public RepositoryInvokerFactory repositoryInvokerFactory() {
-        RepositoryInvokerFactory repositoryInvokerFactory = super.repositoryInvokerFactory(defaultConversionService());
+    public RepositoryInvokerFactory repositoryInvokerFactory(@Qualifier ConversionService defaultConversionService) {
+        RepositoryInvokerFactory repositoryInvokerFactory = super.repositoryInvokerFactory(defaultConversionService);
 
         return new DynamicRepositoryInvokerFactory(repositories(), repositoryInvokerFactory);
     }

@@ -16,10 +16,10 @@ public class ProductAdministration extends AdministrationConfiguration<Product> 
                 .nameField("name")
                 .singularName("Product")
                 .pluralName("Products")
-                .field("type").enumeration(
-                        element("SP", "Smartphone"),
-                        element("TB", "Tablet"),
-                        element("OT", "Other"))
+                .field("productType").enumeration(
+                        element("SMARTPHONE", "Smartphone"),
+                        element("TABLET", "Tablet"),
+                        element("OTHER", "Other"))
                 .build();
     }
 
@@ -30,10 +30,6 @@ public class ProductAdministration extends AdministrationConfiguration<Product> 
     public FieldSetConfigurationUnit listView(FieldSetConfigurationUnitBuilder fragmentBuilder) {
         return fragmentBuilder
                 .field("name").caption("Name")
-                .field("type").caption("Type").enumeration(
-                        element("SP", "S"),
-                        element("TB", "T"),
-                        element("OT", "O"))
                 .field("productType").caption("Product Type")
                 .field("description").caption("Description")
                 .field("price").caption("Price")
@@ -46,7 +42,6 @@ public class ProductAdministration extends AdministrationConfiguration<Product> 
     public FieldSetConfigurationUnit showView(final FieldSetConfigurationUnitBuilder fragmentBuilder) {
         return fragmentBuilder
                 .field("name").caption("Name")
-                .field("type").caption("Type")
                 .field("productType").caption("Product Type")
                 .field("description").caption("Description")
                 .field("price").caption("Price")
@@ -59,7 +54,6 @@ public class ProductAdministration extends AdministrationConfiguration<Product> 
     public FieldSetConfigurationUnit formView(final PersistentFieldSetConfigurationUnitBuilder fragmentBuilder) {
         return fragmentBuilder
                 .field("name").caption("Name")
-                .field("type").caption("Type")
                 .field("productType").caption("Product Type").enumeration(
                         element("SMARTPHONE", "Smartphone"),
                         element("TABLET", "Tablet"),
@@ -76,7 +70,7 @@ public class ProductAdministration extends AdministrationConfiguration<Product> 
         return fragmentBuilder
                 .field("uuid").caption("UUID")
                 .field("name").caption("Name")
-                .field("type").caption("Type")
+                .field("productType").caption("Product Type")
                 .field("description").caption("Description")
                 .field("retired").caption("Out of production")
                 .field("releaseDate").caption("Released on")

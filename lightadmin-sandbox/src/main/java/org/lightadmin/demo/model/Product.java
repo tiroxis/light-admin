@@ -1,9 +1,9 @@
 package org.lightadmin.demo.model;
 
-import java.math.BigDecimal;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
+import org.hibernate.annotations.Type;
+import org.springframework.format.annotation.NumberFormat;
+import org.springframework.util.Assert;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -15,9 +15,10 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.hibernate.annotations.Type;
-import org.springframework.format.annotation.NumberFormat;
-import org.springframework.util.Assert;
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Map;
+import java.util.UUID;
 
 @Entity
 public class Product extends AbstractEntity {
@@ -25,9 +26,6 @@ public class Product extends AbstractEntity {
     @NotNull
     @Size(min = 10, max = 100)
     private String name;
-
-    @Basic
-    private String type;
 
     @NotNull
     @Column(name = "product_type", nullable = false)
@@ -92,10 +90,6 @@ public class Product extends AbstractEntity {
 
     public String getName() {
         return name;
-    }
-
-    public String getType() {
-        return type;
     }
 
     public String getDescription() {

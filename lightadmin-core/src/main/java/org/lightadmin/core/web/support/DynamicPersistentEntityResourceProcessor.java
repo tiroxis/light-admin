@@ -74,22 +74,31 @@ public class DynamicPersistentEntityResourceProcessor implements ResourceProcess
     @Override
     public PersistentEntityResource process(PersistentEntityResource persistentEntityResource) {
         PersistentEntity persistentEntity = persistentEntityResource.getPersistentEntity();
-        ManageableEntity value = (ManageableEntity) persistentEntityResource.getContent();
-        Link[] links = persistentEntityResource.getLinks().toArray(new Link[persistentEntityResource.getLinks().size()]);
 
-        String stringRepresentation = stringRepresentation(value, persistentEntity);
-        Link domainLink = domainLink(persistentEntityResource);
-        boolean managedDomainType = adminConfiguration.isManagedDomainType(persistentEntity.getType());
-        String primaryKey = primaryKey(persistentEntity);
+        if (persistentEntityResource.getContent() instanceof ManageableEntity)
+        {
+            ManageableEntity value = (ManageableEntity) persistentEntityResource.getContent();
+            Link[] links = persistentEntityResource.getLinks().toArray(new Link[persistentEntityResource.getLinks().size()]);
 
-        Map<String, Map<String, Object>> dynamicProperties = dynamicPropertiesPerUnit(value, persistentEntity);
+            String stringRepresentation = stringRepresentation(value, persistentEntity);
+            Link domainLink = domainLink(persistentEntityResource);
+            boolean managedDomainType = adminConfiguration.isManagedDomainType(persistentEntity.getType());
+            String primaryKey = primaryKey(persistentEntity);
 
-        value.setDynamicProperties(dynamicProperties, stringRepresentation, domainLink, managedDomainType, primaryKey, null);
-        PersistentEntityResource.Builder builder = PersistentEntityResource.build(value, persistentEntity);
-        for (Link link : links) {
-            builder = builder.withLink(link);
+            Map<String, Map<String, Object>> dynamicProperties = dynamicPropertiesPerUnit(value, persistentEntity);
+
+            value.setDynamicProperties(dynamicProperties, stringRepresentation, domainLink, managedDomainType, primaryKey, null);
+            PersistentEntityResource.Builder builder = PersistentEntityResource.build(value, persistentEntity);
+            for (Link link : links)
+            {
+                builder = builder.withLink(link);
+            }
+            return builder.build();
         }
-        return builder.build();
+        else
+        {
+            return persistentEntityResource;
+        }
     }
 
     private String primaryKey(PersistentEntity persistentEntity) {

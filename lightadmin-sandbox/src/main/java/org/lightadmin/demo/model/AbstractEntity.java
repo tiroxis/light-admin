@@ -1,12 +1,15 @@
 package org.lightadmin.demo.model;
 
+import org.lightadmin.core.web.support.ManageableEntity;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class AbstractEntity {
+public class AbstractEntity extends ManageableEntity
+{
 
 	@Id
 	@GeneratedValue( strategy = GenerationType.AUTO )
