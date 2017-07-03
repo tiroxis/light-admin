@@ -27,7 +27,6 @@ import org.lightadmin.core.web.json.DomainTypeToJsonMetadataConverter;
 import org.lightadmin.core.web.json.LightAdminJacksonModule;
 import org.lightadmin.core.web.support.ConfigurationHandlerMethodArgumentResolver;
 import org.lightadmin.core.web.support.DomainEntityLinks;
-import org.lightadmin.core.web.support.DynamicPersistentEntityResourceAssemblerArgumentResolver;
 import org.lightadmin.core.web.support.DynamicPersistentEntityResourceProcessor;
 import org.lightadmin.core.web.support.DynamicRepositoryEntityLinks;
 import org.springframework.beans.BeanInstantiationException;
@@ -44,17 +43,15 @@ import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.core.event.ValidatingRepositoryEventListener;
 import org.springframework.data.rest.core.support.DomainObjectMerger;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
-import org.springframework.data.rest.webmvc.config.PersistentEntityResourceAssemblerArgumentResolver;
 import org.springframework.data.rest.webmvc.config.RepositoryRestMvcConfiguration;
 import org.springframework.validation.Validator;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
+import java.util.LinkedList;
 import java.util.List;
 
-import static com.google.common.collect.Lists.newLinkedList;
 import static org.springframework.beans.PropertyAccessorFactory.forDirectFieldAccess;
-import static org.springframework.util.ClassUtils.isAssignableValue;
 
 @Configuration
 @ComponentScan(basePackages = {"org.lightadmin.core.web"},
@@ -155,24 +152,11 @@ public class LightAdminRepositoryRestMvcConfiguration extends RepositoryRestMvcC
     private void configureRepositoryExporterHandlerAdapter(RequestMappingHandlerAdapter requestMappingHandlerAdapter) {
         List<HandlerMethodArgumentResolver> defaultArgumentResolvers = (List<HandlerMethodArgumentResolver>) forDirectFieldAccess(requestMappingHandlerAdapter).getPropertyValue("argumentResolvers");
 
-        List<HandlerMethodArgumentResolver> argumentResolvers = decorateArgumentResolvers(defaultArgumentResolvers);
+        List<HandlerMethodArgumentResolver> argumentResolvers = new LinkedList<>(defaultArgumentResolvers);
 
         argumentResolvers.add(configurationHandlerMethodArgumentResolver());
 
         forDirectFieldAccess(requestMappingHandlerAdapter).setPropertyValue("argumentResolvers", argumentResolvers);
-    }
-
-    private List<HandlerMethodArgumentResolver> decorateArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        List<HandlerMethodArgumentResolver> result = newLinkedList();
-        for (HandlerMethodArgumentResolver argumentResolver : argumentResolvers) {
-            if (isAssignableValue(PersistentEntityResourceAssemblerArgumentResolver.class, argumentResolver)) {
-                PersistentEntityResourceAssemblerArgumentResolver persistentEntityResourceAssemblerArgumentResolver = (PersistentEntityResourceAssemblerArgumentResolver) argumentResolver;
-                result.add(new DynamicPersistentEntityResourceAssemblerArgumentResolver(persistentEntityResourceAssemblerArgumentResolver));
-                continue;
-            }
-            result.add(argumentResolver);
-        }
-        return result;
     }
 
     private GlobalAdministrationConfiguration globalAdministrationConfiguration() {
