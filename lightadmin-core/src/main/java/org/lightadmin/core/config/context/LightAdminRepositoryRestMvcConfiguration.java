@@ -31,12 +31,14 @@ import org.lightadmin.core.web.support.DynamicPersistentEntityResourceProcessor;
 import org.lightadmin.core.web.support.DynamicRepositoryEntityLinks;
 import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.data.mapping.context.PersistentEntities;
 import org.springframework.data.repository.support.Repositories;
 import org.springframework.data.repository.support.RepositoryInvokerFactory;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
@@ -116,12 +118,15 @@ public class LightAdminRepositoryRestMvcConfiguration extends RepositoryRestMvcC
     }
 
     @Override
-    protected void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
+    public RepositoryRestConfiguration config()
+    {
+        final RepositoryRestConfiguration config = super.config();
         config.setDefaultPageSize(10);
         config.setBasePath(lightAdminConfiguration().getApplicationRestBaseUrl().toString());
         config.exposeIdsFor(globalAdministrationConfiguration().getAllDomainTypesAsArray());
         config.setReturnBodyOnCreate(true);
         config.setReturnBodyOnUpdate(true);
+        return config;
     }
 
     @Override
@@ -132,9 +137,12 @@ public class LightAdminRepositoryRestMvcConfiguration extends RepositoryRestMvcC
     }
 
     @Override
-    protected void configureValidatingRepositoryEventListener(ValidatingRepositoryEventListener validatingListener) {
+    public ValidatingRepositoryEventListener validatingRepositoryEventListener(final ObjectFactory<PersistentEntities> entities)
+    {
+        final ValidatingRepositoryEventListener validatingListener = super.validatingRepositoryEventListener(entities);
         validatingListener.addValidator("beforeCreate", validator());
         validatingListener.addValidator("beforeSave", validator());
+        return validatingListener;
     }
 
     @Override
@@ -144,8 +152,11 @@ public class LightAdminRepositoryRestMvcConfiguration extends RepositoryRestMvcC
     }
 
     @Override
-    protected void configureJacksonObjectMapper(ObjectMapper objectMapper) {
+    public ObjectMapper objectMapper()
+    {
+        final ObjectMapper objectMapper = super.objectMapper();
         objectMapper.registerModule(new LightAdminJacksonModule(globalAdministrationConfiguration()));
+        return objectMapper;
     }
 
     @SuppressWarnings("unchecked")
