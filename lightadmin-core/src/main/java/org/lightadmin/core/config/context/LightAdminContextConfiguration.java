@@ -131,7 +131,7 @@ public class LightAdminContextConfiguration extends WebMvcConfigurerAdapter {
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("classpath:messages");
+        messageSource.setBasename("classpath:/org/lightadmin/messages");
         messageSource.setDefaultEncoding("UTF-8");
         messageSource.setCacheSeconds(0);
         messageSource.setFallbackToSystemLocale(false);
