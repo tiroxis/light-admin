@@ -160,9 +160,9 @@ public class LightAdminBeanDefinitionRegistryPostProcessor implements BeanDefini
 
     private BeanDefinition repositoryFactory(Class<?> repoInterface, EntityManager entityManager) {
         BeanDefinitionBuilder builder = rootBeanDefinition(JpaRepositoryFactoryBean.class);
+        builder.addConstructorArgValue(repoInterface);
         builder.addPropertyValue("entityManager", entityManager);
         builder.addPropertyReference("mappingContext", JPA_MAPPPING_CONTEXT_BEAN);
-        builder.addPropertyValue("repositoryInterface", repoInterface);
         return builder.getBeanDefinition();
     }
 
