@@ -35,7 +35,6 @@ import org.springframework.data.rest.webmvc.mapping.Associations;
 import org.springframework.data.util.DirectFieldAccessFallbackBeanWrapper;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceProcessor;
-import org.springframework.hateoas.core.EmbeddedWrappers;
 
 import java.util.Collections;
 import java.util.List;
@@ -64,7 +63,6 @@ public class DynamicPersistentEntityResourceProcessor implements ResourceProcess
     private final DomainEntityLinks domainEntityLinks;
     private final FileResourceStorage fileResourceStorage;
     private final Associations association;
-    private final EmbeddedWrappers embeddedWrappers;
 
     public DynamicPersistentEntityResourceProcessor(GlobalAdministrationConfiguration adminConfiguration, RepositoryRestConfiguration config,
                                                     FileResourceStorage fileResourceStorage, DynamicRepositoryEntityLinks entityLinks,
@@ -74,7 +72,6 @@ public class DynamicPersistentEntityResourceProcessor implements ResourceProcess
         this.entityLinks = entityLinks;
         this.fileResourceStorage = fileResourceStorage;
         this.association = new Associations(resourceMappings, config);
-        this.embeddedWrappers = new EmbeddedWrappers(false);
     }
 
     @Override
