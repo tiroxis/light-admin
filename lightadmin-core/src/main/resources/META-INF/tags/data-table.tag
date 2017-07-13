@@ -81,7 +81,7 @@
                     },
                     </c:when>
                     <c:otherwise>
-                    "mData": '${field.dynamic or light:persistentPropertyTypeOf(field.persistentProperty) eq FILE? 'dynamic_properties.listView.' : ''}${propertyName}',
+                    "mData": '${field.dynamic or light:persistentPropertyTypeOf(field.persistentProperty) eq FILE? '_embedded.manageable_entity.dynamic_properties.listView.' : ''}${propertyName}',
                     </c:otherwise>
                     </c:choose>
                     "mRender": function (innerData) {
