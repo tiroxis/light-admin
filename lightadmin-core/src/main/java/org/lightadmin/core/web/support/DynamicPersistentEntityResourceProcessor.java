@@ -40,6 +40,7 @@ import org.springframework.hateoas.core.EmbeddedWrappers;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
@@ -81,8 +82,6 @@ public class DynamicPersistentEntityResourceProcessor implements ResourceProcess
         PersistentEntity persistentEntity = persistentEntityResource.getPersistentEntity();
         Object value = persistentEntityResource.getContent();
 
-        Link[] links = persistentEntityResource.getLinks().toArray(new Link[persistentEntityResource.getLinks().size()]);
-
         String stringRepresentation = stringRepresentation(value, persistentEntity);
         Link domainLink = domainLink(persistentEntityResource);
         boolean managedDomainType = adminConfiguration.isManagedDomainType(persistentEntity.getType());
@@ -93,10 +92,27 @@ public class DynamicPersistentEntityResourceProcessor implements ResourceProcess
         final ManageableEntity manageableEntity = new ManageableEntity();
         manageableEntity.setDynamicProperties(dynamicProperties, stringRepresentation, domainLink, managedDomainType, primaryKey, null);
 
-        return PersistentEntityResource.build(value, persistentEntity)
+        final PersistentEntityResource.Builder builder = PersistentEntityResource.build(value, persistentEntity)
                 .withEmbedded(singletonList(new ManageableEntityEmbeddedWrapper(manageableEntity)))
-                .withLinks(persistentEntityResource.getLinks())
-                .build();
+                .withLinks(persistentEntityResource.getLinks());
+
+        return getBuildMethod(persistentEntityResource).apply(builder);
+    }
+
+    private Function<PersistentEntityResource.Builder, PersistentEntityResource> getBuildMethod(final PersistentEntityResource persistentEntityResource)
+    {
+        if (persistentEntityResource.isNested())
+        {
+            return PersistentEntityResource.Builder::buildNested;
+        }
+        else if(persistentEntityResource.isNew())
+        {
+            return PersistentEntityResource.Builder::forCreation;
+        }
+        else
+        {
+            return PersistentEntityResource.Builder::build;
+        }
     }
 
     private String primaryKey(PersistentEntity persistentEntity) {
