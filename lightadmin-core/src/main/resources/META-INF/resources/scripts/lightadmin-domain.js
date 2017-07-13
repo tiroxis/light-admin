@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 function DomainEntity(data) {
-    this.string_representation = data['string_representation'];
-    this.managed_type = data['managed_type'];
-    this.primary_key = data['primary_key'];
-    this.primary_key_value = data['primary_key_value'];
-    this.domain_link = this.managed_type ? data['domain_link']['href'] : null;
-    this.links = data['_links'];
+    this.manageable_entity = data['_embedded']['manageable_entity'];
+    this.string_representation = this.manageable_entity['string_representation'];
+    this.managed_type = this.manageable_entity['managed_type'];
+    this.primary_key = this.manageable_entity['primary_key'];
+    this.primary_key_value = this.manageable_entity['primary_key_value'];
+    this.domain_link = this.managed_type ? this.manageable_entity['domain_link']['href'] : null;
+    this.links = this.manageable_entity['_links'];
     this.original_properties = data;
-    this.dynamic_properties = data['dynamic_properties'];
+    this.dynamic_properties = this.manageable_entity['dynamic_properties'];
 
     function getDynamicAssociationValue(domainEntity, propertyMetadata, unitType) {
         var propertyName = propertyMetadata['name'];

@@ -15,7 +15,6 @@
  */
 package org.lightadmin.core.web.support;
 
-import org.lightadmin.api.config.utils.EntityNameExtractor;
 import org.lightadmin.core.config.domain.DomainTypeAdministrationConfiguration;
 import org.lightadmin.core.config.domain.DomainTypeBasicConfiguration;
 import org.lightadmin.core.config.domain.GlobalAdministrationConfiguration;
@@ -23,6 +22,7 @@ import org.lightadmin.core.config.domain.field.FieldMetadata;
 import org.lightadmin.core.config.domain.unit.DomainConfigurationUnitType;
 import org.lightadmin.core.persistence.metamodel.PersistentPropertyType;
 import org.lightadmin.core.storage.FileResourceStorage;
+import org.lightadmin.core.util.Transformer;
 import org.springframework.data.mapping.Association;
 import org.springframework.data.mapping.PersistentEntity;
 import org.springframework.data.mapping.PersistentProperty;
@@ -35,6 +35,7 @@ import org.springframework.data.rest.webmvc.mapping.Associations;
 import org.springframework.data.util.DirectFieldAccessFallbackBeanWrapper;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceProcessor;
+import org.springframework.hateoas.core.EmbeddedWrappers;
 
 import java.util.Collections;
 import java.util.List;
@@ -43,6 +44,8 @@ import java.util.Map;
 import static com.google.common.collect.Lists.newArrayList;
 import static com.google.common.collect.Maps.newHashMap;
 import static com.google.common.collect.Maps.newLinkedHashMap;
+import static java.util.Collections.singletonList;
+import static java.util.Optional.ofNullable;
 import static org.lightadmin.core.config.domain.configuration.support.ExceptionAwareTransformer.exceptionAwareNameExtractor;
 import static org.lightadmin.core.config.domain.field.FieldMetadataUtils.customFields;
 import static org.lightadmin.core.config.domain.field.FieldMetadataUtils.transientFields;
@@ -60,6 +63,7 @@ public class DynamicPersistentEntityResourceProcessor implements ResourceProcess
     private final DomainEntityLinks domainEntityLinks;
     private final FileResourceStorage fileResourceStorage;
     private final Associations association;
+    private final EmbeddedWrappers embeddedWrappers;
 
     public DynamicPersistentEntityResourceProcessor(GlobalAdministrationConfiguration adminConfiguration, RepositoryRestConfiguration config,
                                                     FileResourceStorage fileResourceStorage, DynamicRepositoryEntityLinks entityLinks,
@@ -69,47 +73,46 @@ public class DynamicPersistentEntityResourceProcessor implements ResourceProcess
         this.entityLinks = entityLinks;
         this.fileResourceStorage = fileResourceStorage;
         this.association = new Associations(resourceMappings, config);
+        this.embeddedWrappers = new EmbeddedWrappers(false);
     }
 
     @Override
     public PersistentEntityResource process(PersistentEntityResource persistentEntityResource) {
         PersistentEntity persistentEntity = persistentEntityResource.getPersistentEntity();
+        Object value = persistentEntityResource.getContent();
 
-        if (persistentEntityResource.getContent() instanceof ManageableEntity)
-        {
-            ManageableEntity value = (ManageableEntity) persistentEntityResource.getContent();
-            Link[] links = persistentEntityResource.getLinks().toArray(new Link[persistentEntityResource.getLinks().size()]);
+        Link[] links = persistentEntityResource.getLinks().toArray(new Link[persistentEntityResource.getLinks().size()]);
 
-            String stringRepresentation = stringRepresentation(value, persistentEntity);
-            Link domainLink = domainLink(persistentEntityResource);
-            boolean managedDomainType = adminConfiguration.isManagedDomainType(persistentEntity.getType());
-            String primaryKey = primaryKey(persistentEntity);
+        String stringRepresentation = stringRepresentation(value, persistentEntity);
+        Link domainLink = domainLink(persistentEntityResource);
+        boolean managedDomainType = adminConfiguration.isManagedDomainType(persistentEntity.getType());
+        String primaryKey = primaryKey(persistentEntity);
 
-            Map<String, Map<String, Object>> dynamicProperties = dynamicPropertiesPerUnit(value, persistentEntity);
+        Map<String, Map<String, Object>> dynamicProperties = dynamicPropertiesPerUnit(value, persistentEntity);
 
-            value.setDynamicProperties(dynamicProperties, stringRepresentation, domainLink, managedDomainType, primaryKey, null);
-            PersistentEntityResource.Builder builder = PersistentEntityResource.build(value, persistentEntity);
-            for (Link link : links)
-            {
-                builder = builder.withLink(link);
-            }
-            return builder.build();
-        }
-        else
-        {
-            return persistentEntityResource;
-        }
+        final ManageableEntity manageableEntity = new ManageableEntity();
+        manageableEntity.setDynamicProperties(dynamicProperties, stringRepresentation, domainLink, managedDomainType, primaryKey, null);
+
+        return PersistentEntityResource.build(value, persistentEntity)
+                .withEmbedded(singletonList(new ManageableEntityEmbeddedWrapper(manageableEntity)))
+                .withLinks(persistentEntityResource.getLinks())
+                .build();
     }
 
     private String primaryKey(PersistentEntity persistentEntity) {
-        return persistentEntity.getIdProperty().getName();
+        return ofNullable(persistentEntity.getIdProperty()).map(PersistentProperty::getName).orElse(null);
     }
 
     private String stringRepresentation(Object value, PersistentEntity persistentEntity) {
-        DomainTypeBasicConfiguration domainTypeBasicConfiguration = adminConfiguration.forDomainType(persistentEntity.getType());
-        EntityNameExtractor<Object> nameExtractor = domainTypeBasicConfiguration.getEntityConfiguration().getNameExtractor();
+        return ofNullable(adminConfiguration.forDomainType(persistentEntity.getType()))
+                .map(this::getNameExtractor)
+                .map(transformer -> transformer.apply(value))
+                .orElse(null);
+    }
 
-        return exceptionAwareNameExtractor(nameExtractor, domainTypeBasicConfiguration).apply(value);
+    private Transformer<Object, String> getNameExtractor(final DomainTypeBasicConfiguration config)
+    {
+        return exceptionAwareNameExtractor(config.getEntityConfiguration().getNameExtractor(), config);
     }
 
     private Link domainLink(PersistentEntityResource persistentEntityResource) {
@@ -169,7 +172,7 @@ public class DynamicPersistentEntityResourceProcessor implements ResourceProcess
         return associatedPersistentEntity(persistentProperty, associationValue);
     }
 
-    private List<ManageableEntity> associatedPersistentEntities(Association association, Object instance) {
+    private List<EmbeddedWrapper> associatedPersistentEntities(Association association, Object instance) {
         PersistentProperty persistentProperty = association.getInverse();
 
         Object associationValue = beanWrapper(instance).getPropertyValue(persistentProperty.getName());
@@ -177,7 +180,7 @@ public class DynamicPersistentEntityResourceProcessor implements ResourceProcess
             return null;
         }
 
-        List<ManageableEntity> result = newArrayList();
+        List<EmbeddedWrapper> result = newArrayList();
 
         if (persistentProperty.isArray()) {
             for (Object item : (Object[]) associationValue) {
@@ -192,7 +195,7 @@ public class DynamicPersistentEntityResourceProcessor implements ResourceProcess
         return result;
     }
 
-    private ManageableEntity associatedPersistentEntity(PersistentProperty persistentProperty, Object associationValue) {
+    private EmbeddedWrapper associatedPersistentEntity(PersistentProperty persistentProperty, Object associationValue) {
         if (associationValue == null) {
             return null;
         }
@@ -210,7 +213,8 @@ public class DynamicPersistentEntityResourceProcessor implements ResourceProcess
             domainLink = domainEntityLinks.linkToSingleResource(associationType, primaryKeyValue);
         }
 
-        return ManageableEntity.associatedPersistentEntity(stringRepresentation, managedDomainType, primaryKey, primaryKeyValue, domainLink);
+        final ManageableEntity entity = ManageableEntity.associatedPersistentEntity(stringRepresentation, managedDomainType, primaryKey, primaryKeyValue, domainLink);
+        return new EmbeddedWrapper(new ManageableEntityEmbeddedWrapper(entity));
     }
 
     private static DirectFieldAccessFallbackBeanWrapper beanWrapper(Object instance) {
