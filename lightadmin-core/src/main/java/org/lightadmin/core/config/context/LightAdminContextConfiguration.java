@@ -101,10 +101,10 @@ public class LightAdminContextConfiguration extends WebMvcConfigurerAdapter {
         return new CommonsMultipartResolver();
     }
 
-    @Override
+    /*@Override
     public void configureDefaultServletHandling(final DefaultServletHandlerConfigurer configurer) {
-        configurer.enable();
-    }
+        configurer.enable("default");
+    }*/
 
     @Override
     public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {

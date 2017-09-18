@@ -175,7 +175,7 @@ public class LightAdminBeanDefinitionRegistryPostProcessor implements BeanDefini
     }
 
     private EntityManager findEntityManager(WebApplicationContext rootContext) {
-        EntityManagerFactory entityManagerFactory = EntityManagerFactoryUtils.findEntityManagerFactory(rootContext, null);
+        EntityManagerFactory entityManagerFactory = EntityManagerFactoryUtils.findEntityManagerFactory(rootContext, "entityManagerFactory");
 
         return SharedEntityManagerCreator.createSharedEntityManager(entityManagerFactory);
     }

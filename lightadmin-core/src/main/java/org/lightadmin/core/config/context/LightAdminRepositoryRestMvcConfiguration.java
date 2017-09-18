@@ -140,7 +140,9 @@ public class LightAdminRepositoryRestMvcConfiguration extends RepositoryRestMvcC
     public ValidatingRepositoryEventListener validatingRepositoryEventListener(final ObjectFactory<PersistentEntities> entities)
     {
         final ValidatingRepositoryEventListener validatingListener = super.validatingRepositoryEventListener(entities);
+        validatingListener.addValidator("afterCreate", validator());
         validatingListener.addValidator("beforeCreate", validator());
+        validatingListener.addValidator("afterSave", validator());
         validatingListener.addValidator("beforeSave", validator());
         return validatingListener;
     }
@@ -159,7 +161,6 @@ public class LightAdminRepositoryRestMvcConfiguration extends RepositoryRestMvcC
         return objectMapper;
     }
 
-    @SuppressWarnings("unchecked")
     private void configureRepositoryExporterHandlerAdapter(RequestMappingHandlerAdapter requestMappingHandlerAdapter) {
         List<HandlerMethodArgumentResolver> defaultArgumentResolvers = (List<HandlerMethodArgumentResolver>) forDirectFieldAccess(requestMappingHandlerAdapter).getPropertyValue("argumentResolvers");
 
